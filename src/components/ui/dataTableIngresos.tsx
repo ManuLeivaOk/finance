@@ -39,7 +39,27 @@ import {
   SheetTrigger,
 } from '../../components/ui/sheet'
 import { Label } from './label'
-import { Filter } from 'lucide-react'
+import { Filter, MoreHorizontal } from 'lucide-react'
+import { CategoriasDto } from '../../types/categorias-ingresos'
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../../components/ui/select'
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../components/ui/dropdown-menu'
 
 export const columns: ColumnDef<IngresosDto>[] = [
   {
@@ -85,7 +105,6 @@ export const columns: ColumnDef<IngresosDto>[] = [
       return <div>{formattedDate}</div>
     },
   },
-
   {
     accessorKey: 'amount',
     header: () => <div className="text-right">Monto</div>,
@@ -99,13 +118,49 @@ export const columns: ColumnDef<IngresosDto>[] = [
       return <div className="text-right font-bold">{formatted}</div>
     },
   },
+  {
+    id: 'actions',
+    enableHiding: false,
+    cell: ({ row }) => {
+      const ingreso = row.original
+
+      return (
+        <div className="w-full flex justify-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="noShadow" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigator.clipboard.writeText(JSON.stringify(ingreso.id))
+                }
+              >
+                Copy ingreso ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )
+    },
+  },
 ]
 
 interface Props {
   data: IngresosDto[]
+  categories: CategoriasDto[] | undefined
 }
 
-export default function DataTableIngresos({ data }: Readonly<Props>) {
+export default function DataTableIngresos({
+  data,
+  categories,
+}: Readonly<Props>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -155,13 +210,35 @@ export default function DataTableIngresos({ data }: Readonly<Props>) {
                 <Label htmlFor="from" className="text-right">
                   Fecha desde
                 </Label>
-                <Input id="from" value="" type="date" className="col-span-3" />
+                <Input id="from" type="date" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="to" className="text-right">
                   Fecha desde
                 </Label>
-                <Input id="to" value="" className="col-span-3" type="date" />
+                <Input id="to" className="col-span-3" type="date" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="to" className="text-right">
+                  Categoría
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-[248px] bg-white">
+                    <SelectValue placeholder="Seleccione una cateogoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup className="bg-white">
+                      <SelectLabel>Cateogorías</SelectLabel>
+                      {categories &&
+                        categories.length > 0 &&
+                        categories.map((c) => (
+                          <SelectItem key={c.name} value={c.name}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <SheetFooter>

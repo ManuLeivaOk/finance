@@ -127,14 +127,14 @@ export default function Ingresos() {
       {/* Listado de Ingresos Históricos */}
       <Card className="w-[700px] mx-auto my-10 bg-[#fbfbfb]">
         <CardHeader>
-          <CardTitle>Agregar ingreso</CardTitle>
-          <CardDescription>Agrega y gestiona tus ingresos</CardDescription>
+          <CardTitle>Historial de ingresos</CardTitle>
+          <CardDescription>Consulta y gestiona tus ingresos</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
             <RetroLoader />
           ) : (
-            <DataTableIngresos data={ingresos ?? []} />
+            <DataTableIngresos data={ingresos ?? []} categories={categories} />
           )}
         </CardContent>
       </Card>

@@ -3,6 +3,7 @@ export interface IngresosDto {
   amount: number
   description: string
   category: string
+  id: number
 }
 
 export interface IngresosResponse {
