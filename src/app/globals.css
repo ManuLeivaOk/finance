@@ -12,11 +12,11 @@
   ); /* background color overlay for alert dialogs, modals, etc. */
 
   --bg: #fef2e8;
-  --bw: #fff; /* white and secondary black e.g. utility class variant would be: bg-[#fff] dark:bg-[#212121] */
-  --blank: #000; /* blank black and white */
+  --bw: #fff;
+  --blank: #000;
   --border: #000;
   --text: #000;
-  --mtext: #000; /* text that is placed on background with main color e.g. text color of default button */
+  --mtext: #000;
   --ring: #000;
   --ring-offset: #fff;
 

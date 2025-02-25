@@ -2,9 +2,9 @@ import React from 'react'
 import Link from 'next/link'
 
 const links = [
-  { href: '/products', label: 'Productos', icon: '' },
-  { href: '/providers', label: 'Proveedores', icon: '' },
-  { href: '/clients', label: 'Clientes', icon: '' },
+  { href: '/inicio/ingresos', label: 'Ingresos', icon: '' },
+  { href: '/inicio/gastos', label: 'Gastos', icon: '' },
+  { href: '/inicio/graficos', label: 'Panel', icon: '' },
 ]
 
 const Navigation = () => {

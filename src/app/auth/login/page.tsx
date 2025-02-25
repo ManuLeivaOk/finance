@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Card,
   CardContent,
@@ -12,40 +13,68 @@ import { Label } from '../../../components/ui/label'
 import { Input } from '../../../components/ui/input'
 import { Button } from '../../../components/ui/button'
 import ErrorAlert from '../../../components/ui/errorAlert'
+import RetroLoader from '../../../components/ui/loader'
 
 const Page = () => {
+  const router = useRouter()
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [pass, setPass] = useState('')
   const [error, setError] = useState<string>('')
   const [showAlert, setShowAlert] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const validateEmail = (email: string) => {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     return regex.test(email)
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
 
     // Validaciones
     if (!email || !validateEmail(email)) {
       setError('Por favor ingresa un email válido.')
       setShowAlert(true)
+      setLoading(false)
       return
     }
 
-    if (!password || password.length < 6) {
+    if (!pass || pass.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres.')
       setShowAlert(true)
+      setLoading(false)
       return
     }
 
     setError('')
     setShowAlert(false)
 
-    const credentials = { email, password }
-    console.log('Credenciales enviadas:', credentials)
-    // Aquí puedes agregar la llamada al backend para autenticar
+    const credentials = { email, pass }
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        setError(errorData.msg)
+        setShowAlert(true)
+        setLoading(false)
+        return
+      }
+      console.log('Login exitoso')
+      setLoading(false)
+      router.push('/inicio')
+    } catch (e) {
+      console.log('e', e)
+      setLoading(false)
+    }
   }
 
   return (
@@ -76,15 +105,15 @@ const Page = () => {
                   type="password"
                   id="pass"
                   placeholder="Contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={pass}
+                  onChange={(e) => setPass(e.target.value)}
                 />
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button type="submit" variant="neutral">
-              Ingresar
+            <Button type="submit" variant="neutral" className="w-[90px]">
+              {loading ? <RetroLoader /> : 'Ingresar'}
             </Button>
           </CardFooter>
         </form>
